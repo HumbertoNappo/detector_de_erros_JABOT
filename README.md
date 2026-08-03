@@ -18,8 +18,6 @@ O input principal deste script é o arquivo .csv padrão com os registros export
 1. Clone ou baixe este repositório
 2. Exporte todos os registros da coleção que você deseja verificar
    - Selecione a coleção e clique em "Consultar". Certifique-se de que todos os outros campos de pesquisa estejam vazios.
-   - ![Uploading image.png…]()
-
    - Role até o final da página. Clique em "Exportar" e depois em CSV (Padrão)
    - Salve o arquivo "planilhapadrao.csv" na mesma pasta do script
 3. Baixe os arquivos auxiliares pelos links indicados (verifique se existem versões mais atualizadas)

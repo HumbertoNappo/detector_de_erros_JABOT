@@ -646,7 +646,7 @@ Este bloco compara os nomes de famílias, gêneros e espécies associados aos re
 #### Comparação com o REFLORA
 
 ```{r}
-REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.428/taxon.txt",
+REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.429/taxon.txt",
                     col_names = TRUE)
 
 # Famílias válidas

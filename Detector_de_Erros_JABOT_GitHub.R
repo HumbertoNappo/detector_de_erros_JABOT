@@ -25,7 +25,7 @@ setwd(dirname(getActiveDocumentContext()$path))
 
 
 # Carrega planilha completa do Jabot
-herbario_ibge <- read.csv("planilhapadrao.csv", sep = ";")
+herbario_total <- read.csv("planilhapadrao.csv", sep = ";")
 
 # Testes
 
@@ -36,7 +36,7 @@ herbario_ibge <- read.csv("planilhapadrao.csv", sep = ";")
 
 
 # Ano de coleta anterior a 1760
-ANO_COL_MENOR_QUE_1760 <- herbario_ibge %>%
+ANO_COL_MENOR_QUE_1760 <- herbario_total %>%
   filter(collyy < 1760)
 
 
@@ -44,7 +44,7 @@ ANO_COL_MENOR_QUE_1760 <- herbario_ibge %>%
 
 
 # Ano de determinação anterior a 1760
-ANO_DET_MENOR_QUE_1760 <- herbario_ibge %>%
+ANO_DET_MENOR_QUE_1760 <- herbario_total %>%
   filter(., detyy < 1760)
 
 
@@ -52,7 +52,7 @@ ANO_DET_MENOR_QUE_1760 <- herbario_ibge %>%
 
 
 # Ano de coleta posterior ao atual
-ANO_COL_POSTERIOR_AO_ATUAL <- herbario_ibge %>%
+ANO_COL_POSTERIOR_AO_ATUAL <- herbario_total %>%
   filter(., collyy > year(Sys.Date()))
 
 
@@ -60,7 +60,7 @@ ANO_COL_POSTERIOR_AO_ATUAL <- herbario_ibge %>%
 
 
 # Ano de determinação posterior ao atual
-ANO_DET_POSTERIOR_AO_ATUAL <- herbario_ibge %>%
+ANO_DET_POSTERIOR_AO_ATUAL <- herbario_total %>%
   filter(., detyy > year(Sys.Date()))
 
 
@@ -68,7 +68,7 @@ ANO_DET_POSTERIOR_AO_ATUAL <- herbario_ibge %>%
 
 
 # Ano de coleta com número de dígitos diferente de 4
-ANO_COL_DIFERENTE_DE_4_DIGITOS <- herbario_ibge %>%
+ANO_COL_DIFERENTE_DE_4_DIGITOS <- herbario_total %>%
   filter(., nchar(collyy) != 4)
 
 
@@ -76,7 +76,7 @@ ANO_COL_DIFERENTE_DE_4_DIGITOS <- herbario_ibge %>%
 
 
 # Ano de determinação com número de dígitos diferente de 4
-ANO_DET_DIFERENTE_DE_4_DIGITOS <- herbario_ibge %>%
+ANO_DET_DIFERENTE_DE_4_DIGITOS <- herbario_total %>%
   filter(., nchar(detyy) != 4)
 
 
@@ -84,49 +84,49 @@ ANO_DET_DIFERENTE_DE_4_DIGITOS <- herbario_ibge %>%
 
 
 # Ano de coleta vazio
-ANO_VAZIO <- herbario_ibge %>%
+ANO_VAZIO <- herbario_total %>%
   filter(., is.na(collyy) == TRUE | collyy == "")
 
 
 ### Mês de coleta inválido
 
 
-MES_COLETA_INVALIDO <- herbario_ibge %>%
+MES_COLETA_INVALIDO <- herbario_total %>%
   filter(., is.na(collmm) == FALSE & !(collmm %in% c(1:12)))
 
 
 ### Mês de determinação inválido
 
 
-MES_DET_INVALIDO <- herbario_ibge %>%
+MES_DET_INVALIDO <- herbario_total %>%
   filter(., is.na(detmm) == FALSE & !(detmm %in% c(1:12)))
 
 
 ### Dia de coleta inválido
 
 
-DIA_COLETA_INVALIDO <- herbario_ibge %>%
+DIA_COLETA_INVALIDO <- herbario_total %>%
   filter(., is.na(colldd) == FALSE & !(colldd %in% c(1:31)))
 
 
 ### Dia de determinação inválido
 
 
-DIA_DET_INVALIDO <- herbario_ibge %>%
+DIA_DET_INVALIDO <- herbario_total %>%
   filter(., is.na(detdd) == FALSE & !(detdd %in% c(1:31)))
 
 
 ### Dia de coleta sem mês
 
 
-DIA_COLETA_SEM_MES <- herbario_ibge %>%
+DIA_COLETA_SEM_MES <- herbario_total %>%
   filter(., is.na(collmm) == TRUE & is.na(colldd) == FALSE)
 
 
 ### Dia de determinação sem mês
 
 
-DIA_DET_SEM_MES <- herbario_ibge %>%
+DIA_DET_SEM_MES <- herbario_total %>%
   filter(., is.na(detmm) == TRUE & is.na(detdd) == FALSE)
 
 
@@ -134,7 +134,7 @@ DIA_DET_SEM_MES <- herbario_ibge %>%
 
 
 
-herbario_datas <- herbario_ibge %>%
+herbario_datas <- herbario_total %>%
   mutate(., data_coleta = paste(collyy, collmm, colldd, sep = "-")) %>%
   mutate(., data_determinacao = paste(detyy, detmm, detdd, sep = "-"))
 
@@ -147,10 +147,8 @@ DATA_DET_INVALIDA <- herbario_datas[-c(data_det_inv),] %>%
 
 ### Data de coleta inválida
 
-Detecta datas inválidas como dia 31 em meses de 30 dias e dia 29/02 em anos não-bissextos.
 
-
-herbario_datas <- herbario_ibge %>%
+herbario_datas <- herbario_total %>%
   mutate(., data_coleta = paste(collyy, collmm, colldd, sep = "-")) %>%
   mutate(., data_determinacao = paste(detyy, detmm, detdd, sep = "-"))
 
@@ -165,11 +163,11 @@ DATA_COLETA_INVALIDA <- herbario_datas[-c(data_col_inv),] %>%
 
 
 # Ano de coleta posterior ao ano de identificação
-ANO_COLETA_APOS_ANO_DETERMINACAO <- herbario_ibge %>%
+ANO_COLETA_APOS_ANO_DETERMINACAO <- herbario_total %>%
   filter(., collyy > detyy)
 
 # Dia de coleta posteiror ao dia de identificação
-DIA_COLETA_APOS_DIA_DET <- herbario_ibge %>%
+DIA_COLETA_APOS_DIA_DET <- herbario_total %>%
   mutate(., data_coleta = as.Date(with(., paste(collyy, collmm, colldd, sep = "-")),
                                   format = "%Y-%m-%d")) %>%
   mutate(., data_det = as.Date(with(., paste(detyy, detmm, detdd, sep = "-")),
@@ -181,15 +179,15 @@ DIA_COLETA_APOS_DIA_DET <- herbario_ibge %>%
 
 
 # Número de tombo duplicado
-TOMBO_DUPLICADO <- herbario_ibge %>%
-  filter(., duplicated(herbario_ibge$codbarras) == TRUE)
+TOMBO_DUPLICADO <- herbario_total %>%
+  filter(., duplicated(herbario_total$codbarras) == TRUE)
 
 
 ### Herbário de origem vazio
 
 
 # Herbário de origem vazio
-HERBARIO_VAZIO <- herbario_ibge %>%
+HERBARIO_VAZIO <- herbario_total %>%
   filter(., siglacolbotorigem == "")
 
 
@@ -197,35 +195,35 @@ HERBARIO_VAZIO <- herbario_ibge %>%
 
 
 # Nome do determinador com ponto (.)
-DETERMINADOR_COM_PONTO <- herbario_ibge %>%
-  filter(., grepl("\\.", herbario_ibge$detby) == TRUE)
+DETERMINADOR_COM_PONTO <- herbario_total %>%
+  filter(., grepl("\\.", herbario_total$detby) == TRUE)
 
 
 ### Nome do coletor principal com ponto (.)
 
 
 # Nome do coletor principal com ponto (.)
-COLETOR_COM_PONTO_1 <- herbario_ibge %>%
-  filter(., grepl("\\.", herbario_ibge$collector) == TRUE)
+COLETOR_COM_PONTO_1 <- herbario_total %>%
+  filter(., grepl("\\.", herbario_total$collector) == TRUE)
 
 
 ### Nome dos coletores secundários com ponto (.)
 
 
 # Nome dos coletores secundários com ponto (.)
-COLETOR_COM_PONTO_2 <- herbario_ibge %>%
-  filter(., grepl("\\.", herbario_ibge$addcoll) == TRUE &
-           grepl("et al", herbario_ibge$addcoll) == FALSE)
+COLETOR_COM_PONTO_2 <- herbario_total %>%
+  filter(., grepl("\\.", herbario_total$addcoll) == TRUE &
+           grepl("et al", herbario_total$addcoll) == FALSE)
 
 
 ### et al. escrito errado
 
 
 # et al. escrito errado
-ET_AL_ERRADO <- herbario_ibge %>%
-  filter(., grepl("et. al", herbario_ibge$addcoll) == TRUE |
-           grepl("et al$", herbario_ibge$addcoll) == TRUE |
-           grepl("etal", herbario_ibge$addcoll) == TRUE)
+ET_AL_ERRADO <- herbario_total %>%
+  filter(., grepl("et. al", herbario_total$addcoll) == TRUE |
+           grepl("et al$", herbario_total$addcoll) == TRUE |
+           grepl("etal", herbario_total$addcoll) == TRUE)
 
 
 
@@ -233,7 +231,7 @@ ET_AL_ERRADO <- herbario_ibge %>%
 
 
 # Sem coletor
-SEM_COLETOR <- herbario_ibge %>%
+SEM_COLETOR <- herbario_total %>%
   filter(., is.na(collector) == TRUE)
 
 
@@ -241,7 +239,7 @@ SEM_COLETOR <- herbario_ibge %>%
 
 
 # Coletor ativo por mais de 50 anos
-COLETOR_50_ANOS <- herbario_ibge %>%
+COLETOR_50_ANOS <- herbario_total %>%
   filter(is.na(collyy) == FALSE) %>%
   group_by(collector) %>%
   filter(max(collyy, na.rm = TRUE) - min(collyy, na.rm = TRUE) > 50) %>%
@@ -254,7 +252,7 @@ COLETOR_50_ANOS <- herbario_ibge %>%
 
 
 # Sem número de coleta
-SEM_NUMERO_DE_COLETA <- herbario_ibge %>%
+SEM_NUMERO_DE_COLETA <- herbario_total %>%
   filter(., is.na(number) == TRUE)
 
 
@@ -262,7 +260,7 @@ SEM_NUMERO_DE_COLETA <- herbario_ibge %>%
 
 
 # Número de coleta duplicado
-NUMERO_DE_COLETA_DUPLICADO <- herbario_ibge %>%
+NUMERO_DE_COLETA_DUPLICADO <- herbario_total %>%
   group_by(collector, number) %>%
   filter(n() > 1) %>%
   ungroup() %>%
@@ -275,7 +273,7 @@ NUMERO_DE_COLETA_DUPLICADO <- herbario_ibge %>%
 
 
 # Número de coleta igual número de tombo
-NUM_COLETA_IGUAL_TOMBO <- herbario_ibge %>%
+NUM_COLETA_IGUAL_TOMBO <- herbario_total %>%
   filter(., numtombo == number) %>%
   select(codbarras, numtombo, collector, number, everything())
 
@@ -284,7 +282,7 @@ NUM_COLETA_IGUAL_TOMBO <- herbario_ibge %>%
 
 
 # Sem altitude
-ALTITUDE_VAZIO <- herbario_ibge %>%
+ALTITUDE_VAZIO <- herbario_total %>%
   filter(., altprof == "" | is.na(altprof) == TRUE)
 
 
@@ -292,7 +290,7 @@ ALTITUDE_VAZIO <- herbario_ibge %>%
 
 
 # Altitude menor que 0
-ALTITUDE_MENOR_QUE_0 <- herbario_ibge %>%
+ALTITUDE_MENOR_QUE_0 <- herbario_total %>%
   mutate(., altprof = as.numeric(altprof)) %>%
   filter(., altprof < 0)
 
@@ -300,7 +298,7 @@ ALTITUDE_MENOR_QUE_0 <- herbario_ibge %>%
 ### Altitude maior que o Everest
 
 
-ALTITUDE_MAIOR_QUE_EVEREST <- herbario_ibge %>%
+ALTITUDE_MAIOR_QUE_EVEREST <- herbario_total %>%
   mutate(., altprof = as.numeric(altprof)) %>%
   filter(., altprof > 8849)
 
@@ -309,7 +307,7 @@ ALTITUDE_MAIOR_QUE_EVEREST <- herbario_ibge %>%
 
 
 # Sem nidade de medidade de altitude
-SEM_UNIDADE_ALTITUDE <- herbario_ibge %>%
+SEM_UNIDADE_ALTITUDE <- herbario_total %>%
   filter(., unidmedaltprof == "" & altprof != "")
 
 
@@ -317,19 +315,17 @@ SEM_UNIDADE_ALTITUDE <- herbario_ibge %>%
 
 
 # Unidade de altitude diferente de metros
-ALTITUDE_EM_OUTRA_UNIDADE <- herbario_ibge %>%
+ALTITUDE_EM_OUTRA_UNIDADE <- herbario_total %>%
   filter(., unidmedaltprof != "m." & altprof != "")
 
 
 ### Erro na altitude
 
-Detecta letras e espaço vazios na coluna de altitude.
-
 
 # Erro na altura
-altitude_errada <- grep("[[:alpha:]]| ", herbario_ibge$altprof)
+altitude_errada <- grep("[[:alpha:]]| ", herbario_total$altprof)
 
-ERRO_NA_ALTITUDE <- herbario_ibge[c(altitude_errada),] %>%
+ERRO_NA_ALTITUDE <- herbario_total[c(altitude_errada),] %>%
   filter(., altprof != "")
 
 
@@ -337,7 +333,7 @@ ERRO_NA_ALTITUDE <- herbario_ibge[c(altitude_errada),] %>%
 
 
 # Altura menor ou igual a 0
-ALTURA_0_OU_MENOR <- herbario_ibge %>%
+ALTURA_0_OU_MENOR <- herbario_total %>%
   filter(., altura != "" & as.numeric(altura) <= 0)
 
 
@@ -345,7 +341,7 @@ ALTURA_0_OU_MENOR <- herbario_ibge %>%
 
 
 # Altura maior que a da árvore mais alta do mundo
-ALTA_DEMAIS_M <- herbario_ibge %>%
+ALTA_DEMAIS_M <- herbario_total %>%
   filter(., as.numeric(altura) > 116 & unidmedaltura == "m.")
 
 
@@ -353,7 +349,7 @@ ALTA_DEMAIS_M <- herbario_ibge %>%
 
 
 # Altura maior que 200 cm
-ALTA_DEMAIS_CM <- herbario_ibge %>%
+ALTA_DEMAIS_CM <- herbario_total %>%
   filter(., as.numeric(altura) > 200 & unidmedaltura == "cm.")
 
 
@@ -361,7 +357,7 @@ ALTA_DEMAIS_CM <- herbario_ibge %>%
 
 
 # Sem unidade de medidade de altura
-SEM_UNIDADE_ALTURA <- herbario_ibge %>%
+SEM_UNIDADE_ALTURA <- herbario_total %>%
   filter(., unidmedaltura == "" & altura != "")
 
 
@@ -369,7 +365,7 @@ SEM_UNIDADE_ALTURA <- herbario_ibge %>%
 
 
 # Hábito e altura incompatíveis
-HABITO_ALTURA_INCOMPATIVEL <- herbario_ibge %>%
+HABITO_ALTURA_INCOMPATIVEL <- herbario_total %>%
   filter((habito == "Erva" & altura > 5 & unidmedaltura == "m.") |
            (habito == "erva" & altura > 5 & unidmedaltura == "m.") |
            (habito == "Herbácea" & altura > 5 & unidmedaltura == "m.") |
@@ -383,7 +379,7 @@ HABITO_ALTURA_INCOMPATIVEL <- herbario_ibge %>%
 
 
 # Hábito incomum na família
-habitos_por_familia <- herbario_ibge %>%
+habitos_por_familia <- herbario_total %>%
   filter(family != "", habito != "") %>%
   group_by(family, habito) %>%
   summarise(n = n(), .groups = "drop") %>%
@@ -400,7 +396,7 @@ HABITO_INCONSISTENTE_COM_FAMILIA <- habitos_por_familia %>%
 
 
 # Hábito incomum no gênero
-habitos_por_genero <- herbario_ibge %>%
+habitos_por_genero <- herbario_total %>%
   filter(genus != "", habito != "") %>%
   group_by(family, genus, habito) %>%
   summarise(n = n(), .groups = "drop") %>%
@@ -417,7 +413,7 @@ HABITO_INCONSISTENTE_COM_GENERO <- habitos_por_genero %>%
 
 
 # Hábito incomum na espécie
-habitos_por_especie <- herbario_ibge %>%
+habitos_por_especie <- herbario_total %>%
   filter(sp1 != "", habito != "") %>%
   group_by(family, genus, sp1, habito) %>%
   summarise(n = n(), .groups = "drop") %>%
@@ -434,9 +430,9 @@ HABITO_INCONSISTENTE_COM_ESPECIE <- habitos_por_especie %>%
 
 
 # Erro na altura
-altura_errada <- grep("[[:alpha:]]| ", herbario_ibge$altura)
+altura_errada <- grep("[[:alpha:]]| ", herbario_total$altura)
 
-ERRO_NA_ALTURA <- herbario_ibge[c(altura_errada),] %>%
+ERRO_NA_ALTURA <- herbario_total[c(altura_errada),] %>%
   filter(., altura != "")
 
 
@@ -444,7 +440,7 @@ ERRO_NA_ALTURA <- herbario_ibge[c(altura_errada),] %>%
 
 
 #Herbário ausente na lista do Index Herbariorum 
-herbarios_origem <- as.data.frame(table(herbario_ibge$siglacolbotorigem))
+herbarios_origem <- as.data.frame(table(herbario_total$siglacolbotorigem))
 
 index_herbariorum <- read.csv("eparties-herbarium-04222026.csv",
                               fileEncoding = "UTF-16LE") # Essa versão parece ter vindo com algum erro no encoding, mas esse parâmetro corrige o problema
@@ -459,35 +455,35 @@ HERBARIOS_AUSENTES_IH <- anti_join(herbarios_origem, index_herbariorum,
 
 
 #Hábito
-habito <- as.data.frame(table(herbario_ibge$habito))
+habito <- as.data.frame(table(herbario_total$habito))
 
 
 #### Hábitat
 
 
 #Hábitat
-habitat <- as.data.frame(table(herbario_ibge$habitat))
+habitat <- as.data.frame(table(herbario_total$habitat))
 
 
 #### Status de tipo
 
 
 #Status de tipo
-tipos <- as.data.frame(table(herbario_ibge$typestat))
+tipos <- as.data.frame(table(herbario_total$typestat))
 
 
 #### Coletor principal
 
 
 #Coletor principal
-coletores <- as.data.frame(table(herbario_ibge$collector))
+coletores <- as.data.frame(table(herbario_total$collector))
 
 
 #### Determinador
 
 
 #Determinador
-determinadores <- as.data.frame(table(herbario_ibge$detby))
+determinadores <- as.data.frame(table(herbario_total$detby))
 
 
 ## Taxonomia
@@ -496,7 +492,7 @@ determinadores <- as.data.frame(table(herbario_ibge$detby))
 
 
 # Espécies registradas no Jabot
-especies <- herbario_ibge %>%
+especies <- herbario_total %>%
   filter(sp2 == "" | is.na(sp2) == TRUE) %>% # Remove subespécies e variedades
   select(., c( family, genus, sp1, author1)) %>%
   mutate(species = paste(genus, sp1, sep = " "), .before = 2, .keep = "unused") %>%
@@ -510,15 +506,15 @@ especies <- herbario_ibge %>%
 
 
 # Família escrita sem o sufixo -aceae
-FAMILIA_SEM_ACEAE <- herbario_ibge %>%
-  filter(., grepl("ACEAE$", herbario_ibge$family) == FALSE)
+FAMILIA_SEM_ACEAE <- herbario_total %>%
+  filter(., grepl("ACEAE$", herbario_total$family) == FALSE)
 
 
 ### Gêneros sem família
 
 
 # Gêneros sem família
-GENERO_SEM_FAMILIA <- herbario_ibge %>%
+GENERO_SEM_FAMILIA <- herbario_total %>%
   filter(family == "" & genus != "")
 
 
@@ -526,7 +522,7 @@ GENERO_SEM_FAMILIA <- herbario_ibge %>%
 
 
 # Epítetos específicos sem gênero
-EPITETO_SEM_GENERO <- herbario_ibge %>%
+EPITETO_SEM_GENERO <- herbario_total %>%
   filter(genus == "" & sp1 != "")
 
 
@@ -534,7 +530,7 @@ EPITETO_SEM_GENERO <- herbario_ibge %>%
 
 
 # Gêneros duplicados em diferentes famílias
-GENERO_EM_FAMILIAS_DIFERENTES <- herbario_ibge %>%
+GENERO_EM_FAMILIAS_DIFERENTES <- herbario_total %>%
   select(., c(family, genus)) %>%
   unique() %>%
   .[duplicated(.$genus) == TRUE | duplicated(.$genus, fromLast = TRUE) == TRUE,] %>%
@@ -589,8 +585,8 @@ familias_validas_REFLORA <- REFLORA %>%
   filter(., taxonRank == "FAMILIA") %>%
   select(., c(12:16,21,24))
 
-# Famílias registradas no herbário do IBGE
-familias <- sort(unique(herbario_ibge$family))
+# Famílias registradas no herbário
+familias <- sort(unique(herbario_total$family))
 
 # Famílias ausentes no Reflora
 FAMILIAS_AUSENTES_REFLORA <- familias[familias %in% sort(toupper(familias_validas_REFLORA$family)) == FALSE] %>%
@@ -602,10 +598,10 @@ generos_validos_REFLORA <- REFLORA %>%
   filter(., taxonRank == "GENERO") %>%
   select(., c(12:17,21,24))
 
-# Gêneros registrados no herbário do IBGE
-generos <- sort(unique(herbario_ibge$genus))
+# Gêneros registrados no herbário
+generos <- sort(unique(herbario_total$genus))
 
-generos <- herbario_ibge %>%
+generos <- herbario_total %>%
   select(family, genus) %>%
   distinct() %>%
   filter(genus != "") %>%
@@ -658,8 +654,8 @@ familias_validas_WCVP <- WCVP  %>%
   distinct() %>%
   arrange(family)
 
-# Famílias registradas no herbário do IBGE
-familias <- sort(unique(herbario_ibge$family))
+# Famílias registradas no herbário
+familias <- sort(unique(herbario_total$family))
 
 # Famílias ausentes no WCVP
 FAMILIAS_AUSENTES_WCVP <- familias[familias %in% sort(toupper(familias_validas_WCVP$family)) == FALSE] %>%
@@ -672,10 +668,10 @@ generos_validos_WCVP <- WCVP  %>%
   distinct() %>%
   arrange(family, genus)
 
-# Gêneros registrados no herbário do IBGE
-generos <- sort(unique(herbario_ibge$genus))
+# Gêneros registrados no herbário
+generos <- sort(unique(herbario_total$genus))
 
-generos <- herbario_ibge %>%
+generos <- herbario_total %>%
   select(family, genus) %>%
   distinct() %>%
   filter(genus != "") %>%
@@ -754,13 +750,13 @@ AUTORES_DIFERENTES_WCVP <- semi_join(especies, especies_validas_WCVP,
 
 
 # Converte coordenadas em DMS para decimal
-latitude_DMS <- paste(herbario_ibge$lat_grau, herbario_ibge$lat_min, herbario_ibge$lat_seg, sep = " ")
+latitude_DMS <- paste(herbario_total$lat_grau, herbario_total$lat_min, herbario_total$lat_seg, sep = " ")
 latitude_decimal <- conv_unit(latitude_DMS, "deg_min_sec", "dec_deg")
 
-longitude_DMS <- paste(herbario_ibge$long_grau, herbario_ibge$long_min, herbario_ibge$long_seg, sep = " ")
+longitude_DMS <- paste(herbario_total$long_grau, herbario_total$long_min, herbario_total$long_seg, sep = " ")
 longitude_decimal <- conv_unit(longitude_DMS, "deg_min_sec", "dec_deg")
 
-herbario_coord_decimal <- herbario_ibge %>%
+herbario_coord_decimal <- herbario_total %>%
   mutate(latitude = latitude_decimal, longitude = longitude_decimal) %>%
   mutate(., latitude = ifelse(ns == "S", paste0("-", latitude), latitude)) %>%
   mutate(., longitude = ifelse(ew == "W", paste0("-", longitude), longitude)) %>%
@@ -771,7 +767,7 @@ herbario_coord_decimal <- herbario_ibge %>%
 
 
 # Coordenadas inválidas
-COORD_INVALIDAS <- herbario_ibge %>%
+COORD_INVALIDAS <- herbario_total %>%
   filter(as.numeric(lat_grau) > 90 | as.numeric(long_grau) > 180 |
            as.numeric(lat_min) >= 60 | as.numeric(long_min) >= 60 | 
            as.numeric(lat_seg) >= 60 | as.numeric(long_seg) >= 60)
@@ -789,7 +785,7 @@ COORDENADA_INCOMPLETA <- herbario_coord_decimal %>%
 
 
 # Latitude diferente de N ou S
-LATITUDE_SEM_NS <- herbario_ibge %>%
+LATITUDE_SEM_NS <- herbario_total %>%
   filter(., ns != "N" & ns != "S" & is.na(lat_grau) == FALSE)
 
 
@@ -797,7 +793,7 @@ LATITUDE_SEM_NS <- herbario_ibge %>%
 
 
 # Longitude diferente de E ou W
-LONGITUDE_SEM_EW <- herbario_ibge %>%
+LONGITUDE_SEM_EW <- herbario_total %>%
   filter(., ew != "E" & ew != "W" & is.na(long_grau) == FALSE)
 
 
@@ -805,7 +801,7 @@ LONGITUDE_SEM_EW <- herbario_ibge %>%
 
 
 # Latitude N
-LATITUDE_N <- herbario_ibge %>%
+LATITUDE_N <- herbario_total %>%
   filter(., ns == "N")
 
 
@@ -813,7 +809,7 @@ LATITUDE_N <- herbario_ibge %>%
 
 
 # Longitude E
-LONGITUDE_E <- herbario_ibge %>%
+LONGITUDE_E <- herbario_total %>%
   filter(., ew == "E")
 
 
@@ -821,7 +817,7 @@ LONGITUDE_E <- herbario_ibge %>%
 
 
 # Registro sem país
-PAIS_VAZIO <- herbario_ibge %>%
+PAIS_VAZIO <- herbario_total %>%
   filter(., country == "" | is.na(country) == TRUE)
 
 
@@ -832,15 +828,15 @@ PAIS_VAZIO <- herbario_ibge %>%
 municipios <- read_ods("DTB_2025/RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods", skip = 6) %>%
   select(., majorarea = Nome_UF, minorarea = Nome_Município)
 
-NOME_ESTADO_ERRADO <- herbario_ibge %>%
+NOME_ESTADO_ERRADO <- herbario_total %>%
   filter(., country == "Brasil" & !(majorarea %in% (unique(municipios$majorarea))))
 
-NOME_MUNICIPIO_ERRADO <- herbario_ibge %>%
+NOME_MUNICIPIO_ERRADO <- herbario_total %>%
   filter(., country == "Brasil" & !(minorarea %in% (municipios$minorarea))) %>%
   select(codbarras, numtombo, majorarea, minorarea, everything())
 
 # Combinações de estado e município erradas
-COMBINACAO_EST_MUN_ERRADA <- herbario_ibge %>%
+COMBINACAO_EST_MUN_ERRADA <- herbario_total %>%
   filter(., country == "Brasil") %>%
   anti_join(., municipios, by = c("majorarea", "minorarea"))
 
@@ -943,14 +939,9 @@ uc_shp <- st_read("cnuc_2026_03_atualizado/cnuc_2026_03_atualizado.shp")
 nomes_uc <- as.data.frame(uc_shp$nome_uc)
 
 # Nomes no Jabot que não correspondem ao nomes de UCs registradas
-NOME_UC_ERRADO_TODAS <- herbario_ibge %>%
+NOME_UC_ERRADO_TODAS <- herbario_total %>%
   filter(., uc != "" & !(toupper(uc) %in% (uc_shp$nome_uc))) %>%
   select(., codbarras, uc, latitude, longitude, everything())
-
-# Remove linhas com registros da RECOR
-recor <- grep("IBGE|RECOR", NOME_UC_ERRADO_TODAS$uc)
-
-NOME_UC_ERRADO_SEM_RECOR <- NOME_UC_ERRADO_TODAS[-c(recor),]
 
 
 ### Coordenadas não correspondem à unidade de conservação
@@ -966,17 +957,10 @@ joined_uc <- st_join(pts_uc, uc_shp[st_is_valid(uc_shp) == TRUE,], join = st_wit
 joined_uc$concorda <- ifelse(toupper(joined_uc$uc) == joined_uc$nome_uc, TRUE, FALSE)
 
 
-COORD_E_UC_INCOMPATIVEIS_1 <- joined_uc %>%
+COORD_E_UC_INCOMPATIVEIS <- joined_uc %>%
   filter(., concorda == FALSE) %>%
   select(., codbarras, uc, nome_uc, minorarea, latitude, longitude, everything())
 
-
-COORD_E_UC_INCOMPATIVEIS_2 <- COORD_E_UC_INCOMPATIVEIS_1 %>%
-  filter(., uc != "")
-
-recor <- grep("IBGE|RECOR", COORD_E_UC_INCOMPATIVEIS_2$uc)
-
-COORD_E_UC_INCOMPATIVEIS_3 <- COORD_E_UC_INCOMPATIVEIS_2[-c(recor),]
 
 
 ### Erros espaciais em potencial

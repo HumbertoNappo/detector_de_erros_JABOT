@@ -829,7 +829,7 @@ PAIS_VAZIO <- herbario_ibge %>%
 
 
 # Verifica nomes dos Estados e Municípios
-municipios <- read_ods("RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods", skip = 6) %>%
+municipios <- read_ods("DTB_2025/RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods", skip = 6) %>%
   select(., majorarea = Nome_UF, minorarea = Nome_Município)
 
 NOME_ESTADO_ERRADO <- herbario_ibge %>%

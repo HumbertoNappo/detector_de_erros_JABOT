@@ -2,7 +2,7 @@
 
 ## Carrega Pacotes
 
-{r message=FALSE}
+
 library(CoordinateCleaner)
 library(countrycode)
 library(data.table)
@@ -580,7 +580,7 @@ NOMES_QUE_DIFEREM_EM_3_DIGITOS <- subset(pares_df, dist == 3)#Baixa probabilidad
 #### Comparação com o REFLORA
 
 
-REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.428/taxon.txt",
+REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.429/taxon.txt",
                     col_names = TRUE)
 
 # Famílias válidas
@@ -1006,7 +1006,6 @@ flags <- clean_coordinates(x = herbario_coord_completa_2,
                                      "seas"))
 
 
-{r, fig.width=16,fig.height=13}
 # Plota registros provavelmente corretos (amarelo) e potencialmente errados (roxo)
 plot(flags, lon = "longitude", lat = "latitude")
 

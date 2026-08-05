@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Humberto C. Nappo">
-<meta name="dcterms.date" content="2026-08-04">
+<meta name="dcterms.date" content="2026-08-05">
 
 <title>Detector de Erros Jabot</title>
 <style>
@@ -195,7 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 4, 2026</p>
+      <p class="date">August 5, 2026</p>
     </div>
   </div>
   
@@ -930,66 +930,90 @@ dttm  (1): modified
 <section id="comparação-com-o-world-checklist-of-vascular-plants" class="level4" data-number="3.2.9.2">
 <h4 data-number="3.2.9.2" class="anchored" data-anchor-id="comparação-com-o-world-checklist-of-vascular-plants"><span class="header-section-number">3.2.9.2</span> Comparação com o World Checklist of Vascular Plants</h4>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>WCVP <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"wcvp/wcvp_names.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">"taxon_rank"</span>, <span class="st">"taxon_status"</span>, <span class="st">"family"</span>, <span class="st">"genus"</span>, <span class="st">"taxon_name"</span>, <span class="st">"taxon_authors"</span>)</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias válidas</span></span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>familias_validas_WCVP <span class="ot">&lt;-</span> WCVP  <span class="sc">%&gt;%</span></span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family) <span class="sc">%&gt;%</span></span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family)</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias registradas no herbário do IBGE</span></span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>familias <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(herbario_total<span class="sc">$</span>family))</span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias ausentes no WCVP</span></span>
-<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>FAMILIAS_AUSENTES_WCVP <span class="ot">&lt;-</span> familias[familias <span class="sc">%in%</span> <span class="fu">sort</span>(<span class="fu">toupper</span>(familias_validas_WCVP<span class="sc">$</span>family)) <span class="sc">==</span> <span class="cn">FALSE</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros válidos</span></span>
-<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>generos_validos_WCVP <span class="ot">&lt;-</span> WCVP  <span class="sc">%&gt;%</span></span>
-<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, genus) <span class="sc">%&gt;%</span></span>
-<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, genus)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa nomes do WCVP</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>WCVP <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"wcvp/wcvp_names.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">"taxon_rank"</span>, <span class="st">"taxon_status"</span>, <span class="st">"family"</span>, <span class="st">"genus"</span>, <span class="st">"taxon_name"</span>, <span class="st">"taxon_authors"</span>)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Importa nomes do Bryophyte Nomenclator e ajusta nomes das colunas</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>bryo_nomenclator <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"4839627f-55a2-417a-88c8-ef2541ba8f20/Taxon.tsv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">"dwc:taxonRank"</span>,</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">"dwc:taxonomicStatus"</span>,</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>         <span class="st">"dwc:family"</span>,</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">"dwc:genericName"</span>,</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">"dwc:specificEpithet"</span>,</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>         <span class="st">"dwc:scientificNameAuthorship"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">taxon_rank =</span> <span class="st">"dwc:taxonRank"</span>,</span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">taxon_status =</span> <span class="st">"dwc:taxonomicStatus"</span>,</span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">family =</span> <span class="st">"dwc:family"</span>,</span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">genus =</span> <span class="st">"dwc:genericName"</span>,</span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">taxon_name =</span> <span class="st">"dwc:specificEpithet"</span>,</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">taxon_authors =</span> <span class="st">"dwc:scientificNameAuthorship"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">taxon_rank =</span> <span class="fu">str_to_title</span>(taxon_rank),</span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">taxon_status =</span> <span class="fu">str_to_title</span>(taxon_status),</span>
+<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">taxon_name =</span> <span class="fu">paste</span>(genus, taxon_name, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, taxon_name)</span>
 <span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros registrados no herbário do IBGE</span></span>
-<span id="cb70-26"><a href="#cb70-26" aria-hidden="true" tabindex="-1"></a>generos <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(herbario_total<span class="sc">$</span>genus))</span>
+<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-26"><a href="#cb70-26" aria-hidden="true" tabindex="-1"></a>WCVP_bryo_nome <span class="ot">&lt;-</span> <span class="fu">rbind</span>(WCVP, bryo_nomenclator)</span>
 <span id="cb70-27"><a href="#cb70-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-28"><a href="#cb70-28" aria-hidden="true" tabindex="-1"></a>generos <span class="ot">&lt;-</span> herbario_total <span class="sc">%&gt;%</span></span>
-<span id="cb70-29"><a href="#cb70-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, genus) <span class="sc">%&gt;%</span></span>
-<span id="cb70-30"><a href="#cb70-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb70-31"><a href="#cb70-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(genus <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-32"><a href="#cb70-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, genus)</span>
-<span id="cb70-33"><a href="#cb70-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-34"><a href="#cb70-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros ausentes no WCVP</span></span>
-<span id="cb70-35"><a href="#cb70-35" aria-hidden="true" tabindex="-1"></a>GENEROS_AUSENTES_WCVP <span class="ot">&lt;-</span> generos[generos<span class="sc">$</span>genus <span class="sc">%in%</span> <span class="fu">sort</span>(generos_validos_WCVP<span class="sc">$</span>genus) <span class="sc">==</span> <span class="cn">FALSE</span>, ] <span class="sc">%&gt;%</span></span>
-<span id="cb70-36"><a href="#cb70-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb70-28"><a href="#cb70-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias válidas</span></span>
+<span id="cb70-29"><a href="#cb70-29" aria-hidden="true" tabindex="-1"></a>familias_validas_WCVP_bryo_nome <span class="ot">&lt;-</span> WCVP_bryo_nome  <span class="sc">%&gt;%</span></span>
+<span id="cb70-30"><a href="#cb70-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-31"><a href="#cb70-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family) <span class="sc">%&gt;%</span></span>
+<span id="cb70-32"><a href="#cb70-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb70-33"><a href="#cb70-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family)</span>
+<span id="cb70-34"><a href="#cb70-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-35"><a href="#cb70-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias registradas no herbário</span></span>
+<span id="cb70-36"><a href="#cb70-36" aria-hidden="true" tabindex="-1"></a>familias <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(herbario_total<span class="sc">$</span>family))</span>
 <span id="cb70-37"><a href="#cb70-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-38"><a href="#cb70-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies válidas</span></span>
-<span id="cb70-39"><a href="#cb70-39" aria-hidden="true" tabindex="-1"></a>especies_validas_WCVP <span class="ot">&lt;-</span> WCVP <span class="sc">%&gt;%</span></span>
-<span id="cb70-40"><a href="#cb70-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-41"><a href="#cb70-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(., taxon_rank <span class="sc">==</span> <span class="st">"Species"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-42"><a href="#cb70-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(., <span class="at">species =</span> taxon_name) <span class="sc">%&gt;%</span></span>
-<span id="cb70-43"><a href="#cb70-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(., <span class="at">author1 =</span> taxon_authors) <span class="sc">%&gt;%</span></span>
-<span id="cb70-44"><a href="#cb70-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(., family, species, author1) <span class="sc">%&gt;%</span></span>
-<span id="cb70-45"><a href="#cb70-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">toupper</span>(family)) <span class="sc">%&gt;%</span></span>
-<span id="cb70-46"><a href="#cb70-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, species)</span>
-<span id="cb70-47"><a href="#cb70-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-48"><a href="#cb70-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies ausentes no WCVP</span></span>
-<span id="cb70-49"><a href="#cb70-49" aria-hidden="true" tabindex="-1"></a>ESPECIES_AUSENTES_WCVP <span class="ot">&lt;-</span> <span class="fu">anti_join</span>(especies[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)], especies_validas_WCVP[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb70-38"><a href="#cb70-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias ausentes no WCVP_bryo_nome</span></span>
+<span id="cb70-39"><a href="#cb70-39" aria-hidden="true" tabindex="-1"></a>FAMILIAS_AUSENTES_WCVP_bryo_nome <span class="ot">&lt;-</span> familias[familias <span class="sc">%in%</span> <span class="fu">sort</span>(<span class="fu">toupper</span>(familias_validas_WCVP_bryo_nome<span class="sc">$</span>family)) <span class="sc">==</span> <span class="cn">FALSE</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb70-40"><a href="#cb70-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb70-41"><a href="#cb70-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-42"><a href="#cb70-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros válidos</span></span>
+<span id="cb70-43"><a href="#cb70-43" aria-hidden="true" tabindex="-1"></a>generos_validos_WCVP_bryo_nome <span class="ot">&lt;-</span> WCVP_bryo_nome  <span class="sc">%&gt;%</span></span>
+<span id="cb70-44"><a href="#cb70-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-45"><a href="#cb70-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, genus) <span class="sc">%&gt;%</span></span>
+<span id="cb70-46"><a href="#cb70-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb70-47"><a href="#cb70-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, genus)</span>
+<span id="cb70-48"><a href="#cb70-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-49"><a href="#cb70-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros registrados no herbário</span></span>
+<span id="cb70-50"><a href="#cb70-50" aria-hidden="true" tabindex="-1"></a>generos <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(herbario_total<span class="sc">$</span>genus))</span>
+<span id="cb70-51"><a href="#cb70-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-52"><a href="#cb70-52" aria-hidden="true" tabindex="-1"></a>generos <span class="ot">&lt;-</span> herbario_total <span class="sc">%&gt;%</span></span>
+<span id="cb70-53"><a href="#cb70-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, genus) <span class="sc">%&gt;%</span></span>
+<span id="cb70-54"><a href="#cb70-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb70-55"><a href="#cb70-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(genus <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-56"><a href="#cb70-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, genus)</span>
+<span id="cb70-57"><a href="#cb70-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-58"><a href="#cb70-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros ausentes no WCVP_bryo_nome</span></span>
+<span id="cb70-59"><a href="#cb70-59" aria-hidden="true" tabindex="-1"></a>GENEROS_AUSENTES_WCVP_bryo_nome <span class="ot">&lt;-</span> generos[generos<span class="sc">$</span>genus <span class="sc">%in%</span> <span class="fu">sort</span>(generos_validos_WCVP_bryo_nome<span class="sc">$</span>genus) <span class="sc">==</span> <span class="cn">FALSE</span>, ] <span class="sc">%&gt;%</span></span>
+<span id="cb70-60"><a href="#cb70-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb70-61"><a href="#cb70-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-62"><a href="#cb70-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies válidas</span></span>
+<span id="cb70-63"><a href="#cb70-63" aria-hidden="true" tabindex="-1"></a>especies_validas_WCVP_bryo_nome <span class="ot">&lt;-</span> WCVP_bryo_nome <span class="sc">%&gt;%</span></span>
+<span id="cb70-64"><a href="#cb70-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(taxon_status <span class="sc">==</span> <span class="st">"Accepted"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-65"><a href="#cb70-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(., taxon_rank <span class="sc">==</span> <span class="st">"Species"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-66"><a href="#cb70-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(., <span class="at">species =</span> taxon_name) <span class="sc">%&gt;%</span></span>
+<span id="cb70-67"><a href="#cb70-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(., <span class="at">author1 =</span> taxon_authors) <span class="sc">%&gt;%</span></span>
+<span id="cb70-68"><a href="#cb70-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(., family, species, author1) <span class="sc">%&gt;%</span></span>
+<span id="cb70-69"><a href="#cb70-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">toupper</span>(family)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-70"><a href="#cb70-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(family, species)</span>
+<span id="cb70-71"><a href="#cb70-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-72"><a href="#cb70-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies ausentes no WCVP_bryo_nome</span></span>
+<span id="cb70-73"><a href="#cb70-73" aria-hidden="true" tabindex="-1"></a>ESPECIES_AUSENTES_WCVP_bryo_nome <span class="ot">&lt;-</span> <span class="fu">anti_join</span>(especies[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)], especies_validas_WCVP_bryo_nome[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(family, species)`</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias ausentes no Reflora e no WCVP simultaneamente</span></span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>FAMILIAS_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(FAMILIAS_AUSENTES_REFLORA, FAMILIAS_AUSENTES_WCVP)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Famílias ausentes no Reflora e no WCVP_bryo_nome simultaneamente</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>FAMILIAS_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(FAMILIAS_AUSENTES_REFLORA, FAMILIAS_AUSENTES_WCVP_bryo_nome)</span>
 <span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros ausentes no Reflora e no WCVP simultaneamente</span></span>
-<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>GENEROS_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(GENEROS_AUSENTES_REFLORA, GENEROS_AUSENTES_WCVP)</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Gêneros ausentes no Reflora e no WCVP_bryo_nome simultaneamente</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>GENEROS_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(GENEROS_AUSENTES_REFLORA, GENEROS_AUSENTES_WCVP_bryo_nome)</span>
 <span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies ausentes no Reflora e no WCVP simultaneamente</span></span>
-<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>ESPECIES_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(ESPECIES_AUSENTES_REFLORA, ESPECIES_AUSENTES_WCVP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>ESPECIES_AUSENTES_AMBOS <span class="ot">&lt;-</span> <span class="fu">intersect</span>(ESPECIES_AUSENTES_REFLORA, ESPECIES_AUSENTES_WCVP_bryo_nome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -1031,10 +1055,10 @@ dttm  (1): modified
 <h3 data-number="3.2.11" class="anchored" data-anchor-id="identifica-autores-com-nome-diferente-do-wcvp"><span class="header-section-number">3.2.11</span> Identifica autores com nome diferente do WCVP</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Autores diferentes do WCVP</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>AUTORES_DIFERENTES_WCVP <span class="ot">&lt;-</span> <span class="fu">semi_join</span>(especies, especies_validas_WCVP,</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>AUTORES_DIFERENTES_WCVP <span class="ot">&lt;-</span> <span class="fu">semi_join</span>(especies, especies_validas_WCVP_bryo_nome,</span>
 <span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">by =</span> <span class="st">"species"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">autor_herbario =</span> author1) <span class="sc">%&gt;%</span></span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., especies_validas_WCVP) <span class="sc">%&gt;%</span></span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., especies_validas_WCVP_bryo_nome) <span class="sc">%&gt;%</span></span>
 <span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">autor_WCVP =</span> author1) <span class="sc">%&gt;%</span></span>
 <span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(autor_herbario <span class="sc">!=</span> autor_WCVP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">

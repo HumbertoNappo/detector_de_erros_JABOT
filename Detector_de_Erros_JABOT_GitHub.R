@@ -644,11 +644,35 @@ SINONIMOS_REFLORA <- inner_join(especies[,c(1:2)], sinonimias_reflora[,c(1:2)])
 #### Comparação com o World Checklist of Vascular Plants
 
 
+# Importa nomes do WCVP
 WCVP <- fread("wcvp/wcvp_names.csv") %>%
   select("taxon_rank", "taxon_status", "family", "genus", "taxon_name", "taxon_authors")
 
+# Importa nomes do Bryophyte Nomenclator e ajusta nomes das colunas
+bryo_nomenclator <- fread("4839627f-55a2-417a-88c8-ef2541ba8f20/Taxon.tsv") %>%
+  select("dwc:taxonRank",
+         "dwc:taxonomicStatus",
+         "dwc:family",
+         "dwc:genericName",
+         "dwc:specificEpithet",
+         "dwc:scientificNameAuthorship") %>%
+  rename(taxon_rank = "dwc:taxonRank",
+         taxon_status = "dwc:taxonomicStatus",
+         family = "dwc:family",
+         genus = "dwc:genericName",
+         taxon_name = "dwc:specificEpithet",
+         taxon_authors = "dwc:scientificNameAuthorship") %>%
+  mutate(taxon_rank = str_to_title(taxon_rank),
+         taxon_status = str_to_title(taxon_status),
+         taxon_name = paste(genus, taxon_name, sep = " ")) %>%
+  filter(family != "") %>%
+  arrange(family, taxon_name)
+
+
+WCVP_bryo_nome <- rbind(WCVP, bryo_nomenclator)
+
 # Famílias válidas
-familias_validas_WCVP <- WCVP  %>%
+familias_validas_WCVP_bryo_nome <- WCVP_bryo_nome  %>%
   filter(taxon_status == "Accepted") %>%
   select(family) %>%
   distinct() %>%
@@ -657,12 +681,12 @@ familias_validas_WCVP <- WCVP  %>%
 # Famílias registradas no herbário
 familias <- sort(unique(herbario_total$family))
 
-# Famílias ausentes no WCVP
-FAMILIAS_AUSENTES_WCVP <- familias[familias %in% sort(toupper(familias_validas_WCVP$family)) == FALSE] %>%
+# Famílias ausentes no WCVP_bryo_nome
+FAMILIAS_AUSENTES_WCVP_bryo_nome <- familias[familias %in% sort(toupper(familias_validas_WCVP_bryo_nome$family)) == FALSE] %>%
   as.data.frame()
 
 # Gêneros válidos
-generos_validos_WCVP <- WCVP  %>%
+generos_validos_WCVP_bryo_nome <- WCVP_bryo_nome  %>%
   filter(taxon_status == "Accepted") %>%
   select(family, genus) %>%
   distinct() %>%
@@ -677,12 +701,12 @@ generos <- herbario_total %>%
   filter(genus != "") %>%
   arrange(family, genus)
 
-# Gêneros ausentes no WCVP
-GENEROS_AUSENTES_WCVP <- generos[generos$genus %in% sort(generos_validos_WCVP$genus) == FALSE, ] %>%
+# Gêneros ausentes no WCVP_bryo_nome
+GENEROS_AUSENTES_WCVP_bryo_nome <- generos[generos$genus %in% sort(generos_validos_WCVP_bryo_nome$genus) == FALSE, ] %>%
   as.data.frame()
 
 # Espécies válidas
-especies_validas_WCVP <- WCVP %>%
+especies_validas_WCVP_bryo_nome <- WCVP_bryo_nome %>%
   filter(taxon_status == "Accepted") %>%
   filter(., taxon_rank == "Species") %>%
   mutate(., species = taxon_name) %>%
@@ -691,18 +715,17 @@ especies_validas_WCVP <- WCVP %>%
   mutate(family = toupper(family)) %>%
   arrange(family, species)
 
-# Espécies ausentes no WCVP
-ESPECIES_AUSENTES_WCVP <- anti_join(especies[,c(1:2)], especies_validas_WCVP[,c(1:2)])
+# Espécies ausentes no WCVP_bryo_nome
+ESPECIES_AUSENTES_WCVP_bryo_nome <- anti_join(especies[,c(1:2)], especies_validas_WCVP_bryo_nome[,c(1:2)])
 
-# Famílias ausentes no Reflora e no WCVP simultaneamente
-FAMILIAS_AUSENTES_AMBOS <- intersect(FAMILIAS_AUSENTES_REFLORA, FAMILIAS_AUSENTES_WCVP)
+# Famílias ausentes no Reflora e no WCVP_bryo_nome simultaneamente
+FAMILIAS_AUSENTES_AMBOS <- intersect(FAMILIAS_AUSENTES_REFLORA, FAMILIAS_AUSENTES_WCVP_bryo_nome)
 
-# Gêneros ausentes no Reflora e no WCVP simultaneamente
-GENEROS_AUSENTES_AMBOS <- intersect(GENEROS_AUSENTES_REFLORA, GENEROS_AUSENTES_WCVP)
+# Gêneros ausentes no Reflora e no WCVP_bryo_nome simultaneamente
+GENEROS_AUSENTES_AMBOS <- intersect(GENEROS_AUSENTES_REFLORA, GENEROS_AUSENTES_WCVP_bryo_nome)
 
 # Espécies ausentes no Reflora e no WCVP simultaneamente
-ESPECIES_AUSENTES_AMBOS <- intersect(ESPECIES_AUSENTES_REFLORA, ESPECIES_AUSENTES_WCVP)
-
+ESPECIES_AUSENTES_AMBOS <- intersect(ESPECIES_AUSENTES_REFLORA, ESPECIES_AUSENTES_WCVP_bryo_nome)
 
 ### Identifica autores com nome diferente do Reflora
 
@@ -736,10 +759,10 @@ SINONIMOS_WCVP <- inner_join(especies[,c(1:2)], sinonimias_WCVP[,c(1:2)])
 
 
 # Autores diferentes do WCVP
-AUTORES_DIFERENTES_WCVP <- semi_join(especies, especies_validas_WCVP,
+AUTORES_DIFERENTES_WCVP <- semi_join(especies, especies_validas_WCVP_bryo_nome,
                                      by = "species") %>%
   rename(autor_herbario = author1) %>%
-  left_join(., especies_validas_WCVP) %>%
+  left_join(., especies_validas_WCVP_bryo_nome) %>%
   rename(autor_WCVP = author1) %>%
   filter(autor_herbario != autor_WCVP)
 

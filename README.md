@@ -25,6 +25,7 @@ O input principal deste script é o arquivo .csv padrão com os registros export
    - RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods  https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/23701-divisao-territorial-brasileira.html?=&t=downloads&utm_source=landing&utm_medium=explica&utm_campaign=codmun
    - taxon.txt  https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil
    - BR_Municipios_2025.shp e BR_Pais_2025.shp https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html
+   - Taxon.tsv   https://www.checklistbank.org/dataset/170394/download
    - wcvp_names.csv  https://sftp.kew.org/pub/data-repositories/WCVP/
 4. Salve cada arquivo na pasta adequada conforme indicado nos demais arquivos READ.ME
 5. Abra o script Detector_de_Erros_JABOT_GitHub.R no RStudio

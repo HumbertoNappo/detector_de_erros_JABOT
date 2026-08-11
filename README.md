@@ -4,7 +4,7 @@ O Detector de Erros JABOT é uma ferramenta de controle de qualidade para coleç
 - Datas inconsistentes
 - Herbário de origem fora do Index Herbariorum
 - Número de coleta duplicado
-- Taxonomia em desacordo com o Flora e Funga do Brasil e com o World Checklist of Vascular Plants (taxa e autores)
+- Taxonomia em desacordo com o Flora e Funga do Brasil e com o World Checklist of Vascular Plants e Bryophyte Nomenclator
 - Gêneros duplicados em famílias diferentes
 - Coordenadas incompatíveis com país, estado, município ou unidade de conservação e distância das coordenadas até o município/UC indicado
 - Mapas com plot dos registros com maior probabilidade de erros espaciais

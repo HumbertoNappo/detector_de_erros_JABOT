@@ -1059,7 +1059,7 @@ NOME_UC_ERRADO_SEM_RECOR <- NOME_UC_ERRADO_TODAS[-c(recor),]
 
 ### Coordenadas não correspondem à unidade de conservação
 
-Parece haver um problema de geometrias inválidas no objeto `uc_shp`. Rodar o comando `uc_shp <- sf::st_make_valid(uc_shp)` aparentemente corrige o problema.
+Unidades de conservação podem se sobrepor, ou seja, um dado ponto no espaço pode fazer parte de mais de uma UC simultaneamente. Por isso todas as unidades de conservação que abrangem cada ponto. Se o que estiver preenchido no campo de UC não corresponder a nenhuma das alternativas, a distância até a UC indicada é calculada. Por enquanto estou mantendo também a versão antiga deste teste (que não calcula as distâncias).
 
 ```{r}
 pts_uc <- st_as_sf(herbario_coord_completa,
@@ -1083,6 +1083,76 @@ COORD_E_UC_INCOMPATIVEIS_2 <- COORD_E_UC_INCOMPATIVEIS_1 %>%
 recor <- grep("IBGE|RECOR", COORD_E_UC_INCOMPATIVEIS_2$uc)
 
 COORD_E_UC_INCOMPATIVEIS_3 <- COORD_E_UC_INCOMPATIVEIS_2[-c(recor),]
+
+## Calcula a distância até a UC informada
+
+# Quais registros estão dentro da UC informada?
+uc_confere <- joined_uc %>%
+  st_drop_geometry() %>%
+  mutate(
+    uc_jabot = toupper(uc),
+    uc_shape = nome_uc
+  ) %>%
+  group_by(codbarras) %>%
+  summarise(
+    uc_encontrada = any(uc_jabot == uc_shape, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Mantém apenas registros cuja UC informada NÃO contém o ponto
+uc_erradas <- joined_uc %>%
+  distinct(codbarras, .keep_all = TRUE) %>%
+  left_join(uc_confere, by = "codbarras") %>%
+  filter(
+    uc != "",
+    uc_encontrada == FALSE
+  )
+
+# Geometria da UC informada
+ucs_ref <- uc_shp %>%
+  select(
+    uc_shape = nome_uc,
+    geom_uc = geometry
+  )
+
+# Recupera a geometria da UC indicada no registro
+idx <- match(
+  toupper(uc_erradas$uc),
+  ucs_ref$uc_shape
+)
+
+geom_uc <- ucs_ref$geom_uc[idx]
+
+# Converte para sistema métrico
+uc_erradas_m <- st_transform(uc_erradas, 5880)
+
+geom_uc_m <- st_transform(
+  st_sf(geometry = geom_uc, crs = st_crs(uc_shp)),
+  5880
+)
+
+# Distância até o limite da UC informada
+uc_erradas_m$distancia_m <- as.numeric(
+  st_distance(
+    st_geometry(uc_erradas_m),
+    st_boundary(st_geometry(geom_uc_m)),
+    by_element = TRUE
+  )
+)
+
+# Resultado final
+DISTANCIA_UC <- uc_erradas_m %>%
+  mutate(
+    distancia_km = round(distancia_m / 1000, 2)
+  ) %>%
+  select(
+    codbarras,
+    numtombo,
+    uc,
+    distancia_km,
+    everything()
+  ) %>%
+  arrange(desc(distancia_km))
 ```
 
 ### Erros espaciais em potencial

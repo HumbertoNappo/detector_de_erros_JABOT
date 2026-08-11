@@ -985,6 +985,77 @@ COORD_E_UC_INCOMPATIVEIS <- joined_uc %>%
   select(., codbarras, uc, nome_uc, minorarea, latitude, longitude, everything())
 
 
+## Calcula a distância até a UC informada
+
+# Quais registros estão dentro da UC informada?
+uc_confere <- joined_uc %>%
+  st_drop_geometry() %>%
+  mutate(
+    uc_jabot = toupper(uc),
+    uc_shape = nome_uc
+  ) %>%
+  group_by(codbarras) %>%
+  summarise(
+    uc_encontrada = any(uc_jabot == uc_shape, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Mantém apenas registros cuja UC informada NÃO contém o ponto
+uc_erradas <- joined_uc %>%
+  distinct(codbarras, .keep_all = TRUE) %>%
+  left_join(uc_confere, by = "codbarras") %>%
+  filter(
+    uc != "",
+    uc_encontrada == FALSE
+  )
+
+# Geometria da UC informada
+ucs_ref <- uc_shp %>%
+  select(
+    uc_shape = nome_uc,
+    geom_uc = geometry
+  )
+
+# Recupera a geometria da UC indicada no registro
+idx <- match(
+  toupper(uc_erradas$uc),
+  ucs_ref$uc_shape
+)
+
+geom_uc <- ucs_ref$geom_uc[idx]
+
+# Converte para sistema métrico
+uc_erradas_m <- st_transform(uc_erradas, 5880)
+
+geom_uc_m <- st_transform(
+  st_sf(geometry = geom_uc, crs = st_crs(uc_shp)),
+  5880
+)
+
+# Distância até o limite da UC informada
+uc_erradas_m$distancia_m <- as.numeric(
+  st_distance(
+    st_geometry(uc_erradas_m),
+    st_boundary(st_geometry(geom_uc_m)),
+    by_element = TRUE
+  )
+)
+
+# Resultado final
+DISTANCIA_UC <- uc_erradas_m %>%
+  mutate(
+    distancia_km = round(distancia_m / 1000, 2)
+  ) %>%
+  select(
+    codbarras,
+    numtombo,
+    uc,
+    distancia_km,
+    everything()
+  ) %>%
+  arrange(desc(distancia_km))
+
+
 
 ### Erros espaciais em potencial
 

@@ -6,7 +6,7 @@ O Detector de Erros JABOT é uma ferramenta de controle de qualidade para coleç
 - Número de coleta duplicado
 - Taxonomia em desacordo com o Flora e Funga do Brasil e com o World Checklist of Vascular Plants (taxa e autores)
 - Gêneros duplicados em famílias diferentes
-- Coordenadas incompatíveis com país, estado, município ou unidade de conservação e distância das coordenadas até o município indicado
+- Coordenadas incompatíveis com país, estado, município ou unidade de conservação e distância das coordenadas até o município/UC indicado
 - Mapas com plot dos registros com maior probabilidade de erros espaciais
 
 O próprio Jabot tem um sistema que verifica inconsistências, mas ele padece de algumas limitações. Esta ferramenta expande a gama de verificações e pode ser muito útil para encontrar uma ampla variedade de problemas. Este script opera apenas sobre a planilha de registros exportados, portanto, sua funcionalidade está restrita a encontrar as inconsistências, não a corrigi-las. Uma vez que um erro seja detectado, o ideal é examinar a exsicata e editar o registro manualmente, se necessário.

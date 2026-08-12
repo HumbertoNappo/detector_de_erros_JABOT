@@ -448,6 +448,34 @@ index_herbariorum <- read.csv("eparties-herbarium-04222026.csv",
 HERBARIOS_AUSENTES_IH <- anti_join(herbarios_origem, index_herbariorum,
                                    by = join_by(Var1 == NamOrganisationAcronym))
 
+#Herbário de destino das duplicatas ausente na lista do Index Herbariorum 
+herbarios_destino <- herbario_total %>%
+  select(dups) %>%
+  filter(dups != "", !is.na(dups)) %>%
+  separate_rows(dups, sep = ",") %>%
+  mutate(dups = str_trim(dups)) %>%
+  distinct(dups) %>%
+  arrange(dups)
+
+herbarios_destino_ausentes_IH <- anti_join(
+  herbarios_destino,
+  index_herbariorum,
+  by = join_by(
+    dups == NamOrganisationAcronym
+  )
+)
+siglas_invalidas <- herbarios_destino_ausentes_IH$dups
+
+HERBARIO_DESTINO_AUSENTE_IH <- herbario_total %>%
+  filter(
+    sapply(
+      strsplit(dups, ","),
+      function(x)
+        any(str_trim(x) %in% siglas_invalidas)
+    )
+  ) %>%
+  filter(dups != "null") %>%
+  select(codbarras, numtombo, dups, everything())
 
 ### Outras verificações
 

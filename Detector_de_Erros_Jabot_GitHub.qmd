@@ -509,6 +509,39 @@ HERBARIOS_AUSENTES_IH <- anti_join(herbarios_origem, index_herbariorum,
                                    by = join_by(Var1 == NamOrganisationAcronym))
 ```
 
+### Herbário de destino das duplicatas ausente na lista do Index Herbariorum
+
+```{r}
+#Herbário de destino das duplicatas ausente na lista do Index Herbariorum 
+herbarios_destino <- herbario_total %>%
+  select(dups) %>%
+  filter(dups != "", !is.na(dups)) %>%
+  separate_rows(dups, sep = ",") %>%
+  mutate(dups = str_trim(dups)) %>%
+  distinct(dups) %>%
+  arrange(dups)
+
+herbarios_destino_ausentes_IH <- anti_join(
+  herbarios_destino,
+  index_herbariorum,
+  by = join_by(
+    dups == NamOrganisationAcronym
+  )
+)
+siglas_invalidas <- herbarios_destino_ausentes_IH$dups
+
+HERBARIO_DESTINO_AUSENTE_IH <- herbario_total %>%
+  filter(
+    sapply(
+      strsplit(dups, ","),
+      function(x)
+        any(str_trim(x) %in% siglas_invalidas)
+    )
+  ) %>%
+  filter(dups != "null") %>%
+  select(codbarras, numtombo, dups, everything())
+```
+
 ### Outras verificações
 
 Esse bloco sumariza informações de algumas colunas para auxiliar a detecção de erros diversos. Se identificar algum erro, abra o data frame `herbario_total`, clique em `Filter` e vá até a coluna com a informação incorreta. Digite a informação que deseja corrigir para encontrar a linha onde ela está.
@@ -641,7 +674,7 @@ NOMES_QUE_DIFEREM_EM_3_DIGITOS <- subset(pares_df, dist == 3)#Baixa probabilidad
 
 ### Identifica nomes diferentes dos válidos
 
-Este bloco compara os nomes de famílias, gêneros e espécies associados aos registros no banco de dados com a lista de nomes registrados em duas bases de dados: o [Reflora](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil) e o [World Checklist of Vascular Plants](https://sftp.kew.org/pub/data-repositories/WCVP/). O Reflora foca na taxonomia das espécies que ocorrem no Brasil, e é uma referência nacional. Não obstante, táxons de outras partes do mundo raramente constam nos registros deles. Isso faz com que esses nomes sejam contados junto com os nomes incorretos neste teste. O World Checklist of Vascular Plants, mantido pelo Kew Royal Botannical Gardens tem uma lista mais abrangente, de modo que optei por testar os nomes registrados nas duas bases de dados.
+Este bloco compara os nomes de famílias, gêneros e espécies associados aos registros no banco de dados com a lista de nomes registrados em três bases de dados: o [Reflora](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), o [World Checklist of Vascular Plants](https://sftp.kew.org/pub/data-repositories/WCVP/) e o [Bryophyte Nomenclator](https://www.checklistbank.org/dataset/170394/download). O Reflora foca na taxonomia das espécies que ocorrem no Brasil, e é uma referência nacional. Não obstante, taxa de outras partes do mundo raramente constam nos registros deles. Isso faz com que esses nomes sejam contados junto com os nomes incorretos neste teste. O World Checklist of Vascular Plants e o Bryophyte Nomenclator têm listas mais abrangentes para plantas vasculares e avasculares, respectivamente. Por essa razão, optei por testar os nomes registrados nas três bases de dados.
 
 #### Comparação com o REFLORA
 

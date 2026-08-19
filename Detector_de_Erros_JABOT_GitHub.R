@@ -1078,6 +1078,7 @@ DISTANCIA_UC <- uc_erradas_m %>%
     codbarras,
     numtombo,
     uc,
+    nome_uc,
     distancia_km,
     everything()
   ) %>%

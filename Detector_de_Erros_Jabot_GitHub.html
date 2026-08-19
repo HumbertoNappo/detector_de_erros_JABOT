@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Humberto C. Nappo">
-<meta name="dcterms.date" content="2026-08-12">
+<meta name="dcterms.date" content="2026-08-19">
 
 <title>Detector de Erros Jabot</title>
 <style>
@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 12, 2026</p>
+      <p class="date">August 19, 2026</p>
     </div>
   </div>
   
@@ -1436,10 +1436,11 @@ Geodetic CRS:  SIRGAS 2000</code></pre>
 <span id="cb100-85"><a href="#cb100-85" aria-hidden="true" tabindex="-1"></a>    codbarras,</span>
 <span id="cb100-86"><a href="#cb100-86" aria-hidden="true" tabindex="-1"></a>    numtombo,</span>
 <span id="cb100-87"><a href="#cb100-87" aria-hidden="true" tabindex="-1"></a>    uc,</span>
-<span id="cb100-88"><a href="#cb100-88" aria-hidden="true" tabindex="-1"></a>    distancia_km,</span>
-<span id="cb100-89"><a href="#cb100-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>()</span>
-<span id="cb100-90"><a href="#cb100-90" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb100-91"><a href="#cb100-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(distancia_km))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb100-88"><a href="#cb100-88" aria-hidden="true" tabindex="-1"></a>    nome_uc,</span>
+<span id="cb100-89"><a href="#cb100-89" aria-hidden="true" tabindex="-1"></a>    distancia_km,</span>
+<span id="cb100-90"><a href="#cb100-90" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>()</span>
+<span id="cb100-91"><a href="#cb100-91" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb100-92"><a href="#cb100-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(distancia_km))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="erros-espaciais-em-potencial" class="level3" data-number="3.3.13">
@@ -1536,10 +1537,10 @@ Geodetic CRS:  WGS 84</code></pre>
 <pre><code>Testing biodiversity institutions</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Flagged 288 records.</code></pre>
+<pre><code>Flagged 290 records.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Flagged 552 of 77446 records, EQ = 0.01.</code></pre>
+<pre><code>Flagged 554 of 77452 records, EQ = 0.01.</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1570,9 +1571,9 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ERROS_POTENCIAIS)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    .val     .equ     .zer     .cen     .sea     .con     .gbf    .inst 
-       0        0        0        2      211      262        0      288 
+       0        0        0        2      211      262        0      290 
 .summary 
-     552 </code></pre>
+     554 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Latitude e longitude iguais</span></span>
 <span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>LAT_LON_IGUAIS <span class="ot">&lt;-</span> ERROS_POTENCIAIS <span class="sc">%&gt;%</span></span>

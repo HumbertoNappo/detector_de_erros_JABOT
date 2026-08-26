@@ -984,7 +984,7 @@ COORD_E_MUNICIP_INCOMPATIVEIS <- coord_erradas %>%
 
 
 # Carrega shapefile das unidades de conservação
-uc_shp <- st_read("cnuc_2026_03_atualizado/cnuc_2026_03_atualizado.shp")
+uc_shp <- st_read("cnuc_2026_07/cnuc_2026_07.shp")
 
 # Nomes das UCs
 nomes_uc <- as.data.frame(uc_shp$nome_uc)

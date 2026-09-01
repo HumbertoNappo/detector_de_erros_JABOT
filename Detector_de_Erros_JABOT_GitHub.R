@@ -361,6 +361,68 @@ SEM_UNIDADE_ALTURA <- herbario_total %>%
   filter(., unidmedaltura == "" & altura != "")
 
 
+### Hábito incompatível com o Reflora
+
+
+habitos_reflora <- get.taxa(especies$species, life.form = TRUE)
+
+HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%
+  mutate(
+    species = paste(genus, sp1)
+  ) %>%
+  left_join(
+    habitos_reflora %>%
+      select(
+        species = original.search,
+        habito_reflora = life.form
+      ),
+    by = "species"
+  ) %>%
+  mutate(
+    habito_compativel = mapply(
+      function(h_jabot, h_reflora){
+        
+        if(
+          is.na(h_jabot) ||
+          h_jabot == "" ||
+          is.na(h_reflora) ||
+          h_reflora == "" ||
+          h_reflora == "Desconhecida"
+        ){
+          return(NA)
+        }
+        
+        # comparação case insensitive
+        h_jabot <- tolower(trimws(h_jabot))
+        
+        # transforma "/" em "|"
+        h_reflora <- gsub("/", "|", h_reflora, fixed = TRUE)
+        
+        opcoes_reflora <- strsplit(
+          tolower(h_reflora),
+          "\\|"
+        )[[1]]
+        
+        h_jabot %in% trimws(opcoes_reflora)
+        
+      },
+      habito,
+      habito_reflora
+    )
+  ) %>%
+  filter(habito_compativel == FALSE) %>%
+  select(
+    codbarras,
+    family,
+    genus,
+    sp1,
+    habito_jabot = habito,
+    habito_reflora,
+    everything()
+  )
+
+
+
 ### Hábito e altura incompatíveis
 
 

@@ -364,6 +364,17 @@ SEM_UNIDADE_ALTURA <- herbario_total %>%
 ### Hábito incompatível com o Reflora
 
 
+# Espécies no herbário
+especies <- herbario_total %>%
+  filter(sp2 == "" | is.na(sp2) == TRUE) %>% # Remove subespécies e variedades
+  select(., c( family, genus, sp1, author1)) %>%
+  mutate(species = paste(genus, sp1, sep = " "), .before = 2, .keep = "unused") %>%
+  distinct() %>%
+  filter(species != "" & species != " ") %>%
+  arrange(family, species) %>%
+  .[grep("[[:alpha:]] [[:alpha:]]", .$species),]
+
+# Espécie com hábito incompatível com o Reflora
 habitos_reflora <- get.taxa(especies$species, life.form = TRUE)
 
 HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%

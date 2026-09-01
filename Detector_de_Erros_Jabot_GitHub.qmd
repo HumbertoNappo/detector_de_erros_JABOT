@@ -415,6 +415,80 @@ SEM_UNIDADE_ALTURA <- herbario_total %>%
   filter(., unidmedaltura == "" & altura != "")
 ```
 
+### Espécie com hábito incompatível com o Reflora
+
+Este script contém cinco testes que buscam inconsistência no hábito registrado. Este primeiro talvez torne os outros obsoletos na maioria dos casos, mas optei por deixar todos aqui por acreditar que ainda podem ser úteis na triagem dos erros. Este primeiro teste compara os hábitos registrados no Jabot e no Flora e Funga do Brasil e retorna as linhas com incongruência. Letras minúsculas e maiúsculas são consideradas iguais para essa comparação, mas outras difereças de grafia são tratadas como hábitos diferentes.
+```{r}
+# Espécies no herbário
+especies <- herbario_total %>%
+  filter(sp2 == "" | is.na(sp2) == TRUE) %>% # Remove subespécies e variedades
+  select(., c( family, genus, sp1, author1)) %>%
+  mutate(species = paste(genus, sp1, sep = " "), .before = 2, .keep = "unused") %>%
+  distinct() %>%
+  filter(species != "" & species != " ") %>%
+  arrange(family, species) %>%
+  .[grep("[[:alpha:]] [[:alpha:]]", .$species),]
+
+# Espécie com hábito incompatível com o Reflora
+habitos_reflora <- get.taxa(especies$species, life.form = TRUE)
+
+HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%
+  mutate(
+    species = paste(genus, sp1)
+  ) %>%
+  left_join(
+    habitos_reflora %>%
+      select(
+        species = original.search,
+        habito_reflora = life.form
+      ),
+    by = "species"
+  ) %>%
+  mutate(
+    habito_compativel = mapply(
+      function(h_jabot, h_reflora){
+        
+        if(
+          is.na(h_jabot) ||
+          h_jabot == "" ||
+          is.na(h_reflora) ||
+          h_reflora == "" ||
+          h_reflora == "Desconhecida"
+        ){
+          return(NA)
+        }
+        
+        # comparação case insensitive
+        h_jabot <- tolower(trimws(h_jabot))
+        
+        # transforma "/" em "|"
+        h_reflora <- gsub("/", "|", h_reflora, fixed = TRUE)
+        
+        opcoes_reflora <- strsplit(
+          tolower(h_reflora),
+          "\\|"
+        )[[1]]
+        
+        h_jabot %in% trimws(opcoes_reflora)
+        
+      },
+      habito,
+      habito_reflora
+    )
+  ) %>%
+  filter(habito_compativel == FALSE) %>%
+  select(
+    codbarras,
+    family,
+    genus,
+    sp1,
+    habito_jabot = habito,
+    habito_reflora,
+    everything()
+  )
+```
+
+
 ### Hábito e altura incompatíveis
 
 ```{r}

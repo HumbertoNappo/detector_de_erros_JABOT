@@ -6,6 +6,7 @@
 library(CoordinateCleaner)
 library(countrycode)
 library(data.table)
+library(flora)
 library(geosphere)
 library(measurements)
 library(readODS)
@@ -374,7 +375,7 @@ especies <- herbario_total %>%
   arrange(family, species) %>%
   .[grep("[[:alpha:]] [[:alpha:]]", .$species),]
 
-# Espécie com hábito incompatível com o Reflora
+# Hábito incompatível com o Reflora
 habitos_reflora <- get.taxa(especies$species, life.form = TRUE)
 
 HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%
@@ -677,7 +678,7 @@ NOMES_QUE_DIFEREM_EM_3_DIGITOS <- subset(pares_df, dist == 3)#Baixa probabilidad
 #### Comparação com o REFLORA
 
 
-REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.429/taxon.txt",
+REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.430/taxon.txt",
                     col_names = TRUE)
 
 # Famílias válidas
@@ -1057,7 +1058,7 @@ COORD_E_MUNICIP_INCOMPATIVEIS <- coord_erradas %>%
 
 
 # Carrega shapefile das unidades de conservação
-uc_shp <- st_read("cnuc_2026_07/cnuc_2026_07.shp")
+uc_shp <- st_read("cnuc_2026_07/cnuc_26_07_31.shp")
 
 # Nomes das UCs
 nomes_uc <- as.data.frame(uc_shp$nome_uc)

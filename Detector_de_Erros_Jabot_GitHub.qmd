@@ -22,6 +22,7 @@ Cada verificação feita por este script gera um objeto da classe data.frame com
 library(CoordinateCleaner)
 library(countrycode)
 library(data.table)
+library(flora)
 library(geosphere)
 library(measurements)
 library(readODS)
@@ -415,9 +416,10 @@ SEM_UNIDADE_ALTURA <- herbario_total %>%
   filter(., unidmedaltura == "" & altura != "")
 ```
 
-### Espécie com hábito incompatível com o Reflora
+### Hábito incompatível com o Reflora
 
 Este script contém cinco testes que buscam inconsistência no hábito registrado. Este primeiro talvez torne os outros obsoletos na maioria dos casos, mas optei por deixar todos aqui por acreditar que ainda podem ser úteis na triagem dos erros. Este primeiro teste compara os hábitos registrados no Jabot e no Flora e Funga do Brasil e retorna as linhas com incongruência. Letras minúsculas e maiúsculas são consideradas iguais para essa comparação, mas outras difereças de grafia são tratadas como hábitos diferentes.
+
 ```{r}
 # Espécies no herbário
 especies <- herbario_total %>%
@@ -429,7 +431,7 @@ especies <- herbario_total %>%
   arrange(family, species) %>%
   .[grep("[[:alpha:]] [[:alpha:]]", .$species),]
 
-# Espécie com hábito incompatível com o Reflora
+# Hábito incompatível com o Reflora
 habitos_reflora <- get.taxa(especies$species, life.form = TRUE)
 
 HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%
@@ -487,7 +489,6 @@ HABITO_INCOMPATIVEL_REFLORA <- herbario_total %>%
     everything()
   )
 ```
-
 
 ### Hábito e altura incompatíveis
 
@@ -753,7 +754,7 @@ Este bloco compara os nomes de famílias, gêneros e espécies associados aos re
 #### Comparação com o REFLORA
 
 ```{r}
-REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.429/taxon.txt",
+REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.430/taxon.txt",
                     col_names = TRUE)
 
 # Famílias válidas
@@ -1148,7 +1149,7 @@ Os shapefiles das unidades de conservação brasileiras são disponibilizados no
 
 ```{r}
 # Carrega shapefile das unidades de conservação
-uc_shp <- st_read("cnuc_2026_07/cnuc_2026_07.shp")
+uc_shp <- st_read("cnuc_2026_07/cnuc_26_07_31.shp")
 
 # Nomes das UCs
 nomes_uc <- as.data.frame(uc_shp$nome_uc)

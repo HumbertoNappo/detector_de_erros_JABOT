@@ -224,7 +224,8 @@ COLETOR_COM_PONTO_2 <- herbario_total %>%
 ET_AL_ERRADO <- herbario_total %>%
   filter(., grepl("et. al", herbario_total$addcoll) == TRUE |
            grepl("et al$", herbario_total$addcoll) == TRUE |
-           grepl("etal", herbario_total$addcoll) == TRUE)
+           grepl("etal", herbario_total$addcoll) == TRUE |
+           grepl("et.al$", herbario_total$addcoll) == TRUE)
 
 
 
@@ -513,14 +514,19 @@ ERRO_NA_ALTURA <- herbario_total[c(altura_errada),] %>%
 ### Herbário ausente na lista do Index Herbariorum
 
 
-#Herbário ausente na lista do Index Herbariorum 
+# Herbário ausente na lista do Index Herbariorum 
 herbarios_origem <- as.data.frame(table(herbario_total$siglacolbotorigem))
 
 index_herbariorum <- read.csv("eparties-herbarium-04222026.csv",
                               fileEncoding = "UTF-16LE") # Essa versão parece ter vindo com algum erro no encoding, mas esse parâmetro corrige o problema
 
-HERBARIOS_AUSENTES_IH <- anti_join(herbarios_origem, index_herbariorum,
-                                   by = join_by(Var1 == NamOrganisationAcronym))
+herbario_origem_ausente_IH <- anti_join(herbarios_origem, index_herbariorum,
+                                        by = join_by(Var1 == NamOrganisationAcronym))
+
+HERBARIO_ORIGEM_AUSENTE_IH <- herbario_total %>%
+  filter(siglacolbotorigem %in% herbario_origem_ausente_IH[,1]) %>%
+  filter(dups != "null") %>%
+  select(codbarras, numtombo, siglacolbotorigem, dups, everything())
 
 #Herbário de destino das duplicatas ausente na lista do Index Herbariorum 
 herbarios_destino <- herbario_total %>%
@@ -678,7 +684,7 @@ NOMES_QUE_DIFEREM_EM_3_DIGITOS <- subset(pares_df, dist == 3)#Baixa probabilidad
 #### Comparação com o REFLORA
 
 
-REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.430/taxon.txt",
+REFLORA <- read_tsv("dwca-lista_especies_flora_brasil-v393.432/taxon.txt",
                     col_names = TRUE)
 
 # Famílias válidas
